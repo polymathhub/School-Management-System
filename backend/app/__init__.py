@@ -1,0 +1,1 @@
+"""OnlineSchool Backend Application"""
