@@ -1,0 +1,34 @@
+{
+	# Global options
+	admin off
+}
+
+:{$PORT:80} {
+	# Proxy API requests to the Python backend
+	handle /api/* {
+		reverse_proxy localhost:8000
+	}
+
+	# Proxy health check to the Python backend
+	handle /health {
+		reverse_proxy localhost:8000
+	}
+
+	# Serve static assets from the public directory
+	handle /css/* {
+		root * public
+		file_server
+	}
+
+	handle /js/* {
+		root * public
+		file_server
+	}
+
+	# Serve everything else — root serves onlineschool.html as index
+	handle {
+		root * .
+		try_files {path} /onlineschool.html
+		file_server
+	}
+}
