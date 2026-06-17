@@ -1,0 +1,11 @@
+[build]
+nixpkgs-version = "latest"
+
+[build.packages]
+python311 = {}
+
+[install]
+cmds = ["pip install -r requirements.txt"]
+
+[start]
+cmd = "cd backend && uvicorn app.main:app --host 0.0.0.0 --port $PORT"
