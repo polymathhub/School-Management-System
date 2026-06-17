@@ -8,7 +8,7 @@
 // ============================================================
 
 const APP_CONFIG = {
-  apiBase: 'http://localhost:8000/api',  // ✅ Backend API URL
+  apiBase: '/api',  // Relative path — proxied by Caddy to the Python backend
   version: '1.0.0',
   roles: ['admin', 'teacher', 'parent', 'student']
 };
@@ -218,7 +218,7 @@ async function handleLogin(e) {
     }
   } catch (error) {
     console.error('Login error:', error);
-    errorEl.innerHTML = '⚠️ Connection error. Is the backend running at http://localhost:8000?';
+    errorEl.innerHTML = '⚠️ Connection error. Could not reach the backend API. Please try again.';
     errorEl.classList.add('show');
   } finally {
     // Reset button
