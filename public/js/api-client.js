@@ -111,10 +111,17 @@ class APIClient {
 
       // Handle 401 Unauthorized
       if (response.status === 401) {
+        // Normalize detail from response (can be string, object, or array of errors)
+        const normalizeDetail = (d) => {
+          if (!d) return null;
+          if (Array.isArray(d)) return d.map(it => (typeof it === 'string' ? it : (it.msg || JSON.stringify(it)))).join('; ');
+          if (typeof d === 'object') return d.msg || d.detail || JSON.stringify(d);
+          return String(d);
+        };
         // Check if this is a login attempt (credentials invalid) vs session expired
         if (endpoint === '/auth/login') {
           // Invalid credentials
-          const errorMsg = responseData.detail || 'Invalid email or password';
+          const errorMsg = normalizeDetail(responseData.detail) || 'Invalid email or password';
           this.log('Login failed - invalid credentials', errorMsg);
           throw new Error(errorMsg);
         } else {
@@ -128,7 +135,13 @@ class APIClient {
 
       // Handle other error responses
       if (!response.ok) {
-        const errorMessage = responseData.detail || `Error: ${response.status}`;
+        const normalizeDetail = (d) => {
+          if (!d) return null;
+          if (Array.isArray(d)) return d.map(it => (typeof it === 'string' ? it : (it.msg || JSON.stringify(it)))).join('; ');
+          if (typeof d === 'object') return d.msg || d.detail || JSON.stringify(d);
+          return String(d);
+        };
+        const errorMessage = normalizeDetail(responseData.detail) || `Error: ${response.status}`;
         this.log(`API Error ${endpoint}`, { status: response.status, error: errorMessage });
         const error = new Error(errorMessage);
         error.status = response.status;
