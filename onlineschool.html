@@ -5703,9 +5703,20 @@ button, [role="button"] { touch-action: manipulation; -webkit-tap-highlight-colo
 
     try {
       var res = await APIClient.register(payload);
-      // on success, close auth and open dashboard
+      // set current user/role from response or from stored client
+      var user = null;
+      if (res && res.user) user = res.user;
+      else user = APIClient.getUser() || null;
+      if (user) {
+        currentUser = user;
+        currentRole = (user.role || role || 'admin').toLowerCase();
+      } else {
+        currentRole = (role || 'admin').toLowerCase();
+      }
+
+      // on success, close auth and open the appropriate dashboard
       closeAuth();
-      showDashboard(role);
+      showDashboard(currentRole);
     } catch (err) {
       // Clear previous field highlights
       form.querySelectorAll('input').forEach(function(i) { i.style.borderColor = ''; });
