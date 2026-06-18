@@ -32,7 +32,7 @@ class UserCreate(BaseModel):
     last_name: str = Field(..., min_length=1, max_length=100)
     phone: Optional[str] = None
     role: str = Field(..., pattern="^(admin|teacher|parent|student)$")
-    school_id: int
+    school_id: Optional[int] = None
 
 
 class UserUpdate(BaseModel):

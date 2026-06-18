@@ -5,7 +5,8 @@ from datetime import timedelta
 from app.core.database import get_db
 from app.core.security import SecurityUtils, get_current_user
 from app.core.config import settings
-from app.models import User
+from app.models import User, School
+import time
 from app.schemas.schemas import AuthRequest, AuthResponse, UserResponse, UserCreate
 
 router = APIRouter(prefix="/api/auth", tags=["auth"])
@@ -23,6 +24,17 @@ def register(user_data: UserCreate, db: Session = Depends(get_db)):
             detail="Email already registered"
         )
     
+    # If no school_id provided, create a minimal School record
+    school_id = user_data.school_id
+    if not school_id:
+        default_name = f"{user_data.first_name or 'New'} School"
+        default_email = f"{user_data.email.split('@')[0]}.school@local"
+        new_school = School(name=default_name, email=default_email)
+        db.add(new_school)
+        db.commit()
+        db.refresh(new_school)
+        school_id = new_school.id
+
     # Create new user
     hashed_password = SecurityUtils.hash_password(user_data.password)
     new_user = User(
@@ -32,7 +44,7 @@ def register(user_data: UserCreate, db: Session = Depends(get_db)):
         last_name=user_data.last_name,
         phone=user_data.phone,
         role=user_data.role,
-        school_id=user_data.school_id,
+        school_id=school_id,
     )
     
     db.add(new_user)
