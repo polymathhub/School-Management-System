@@ -5432,7 +5432,7 @@ button, [role="button"] { touch-action: manipulation; -webkit-tap-highlight-colo
 
 /* ============================================================
    GLOBAL AUTH & DASHBOARD SYSTEM
-  
+   ============================================================ */
 (function() {
   'use strict';
 
@@ -5696,14 +5696,13 @@ button, [role="button"] { touch-action: manipulation; -webkit-tap-highlight-colo
 
     var parts = fullName.split(' ').filter(Boolean);
     var first_name = parts.length ? parts[0] : email.split('@')[0];
-    var last_name = parts.length > 1 ? parts.slice(1).join(' ') : null;
+    var last_name = parts.length > 1 ? parts.slice(1).join(' ') : '';
 
     var payload = {
       email: email,
       password: password,
       first_name: first_name,
-      // only include last_name when provided to satisfy backend optional schema
-      ...(last_name ? { last_name: last_name } : {}),
+      last_name: last_name,
       phone: phone || undefined,
       role: role,
       school_id: localStorage.getItem('schoolId') ? parseInt(localStorage.getItem('schoolId'), 10) : undefined
@@ -5801,46 +5800,12 @@ button, [role="button"] { touch-action: manipulation; -webkit-tap-highlight-colo
   /* --- Show role dashboard --- */
   function showDashboard(role) {
     currentDash = role;
-    var r = (role || '').toLowerCase();
-    var cfg = ROLES[r];
-    if (!cfg) {
-      console.warn('Unknown role for dashboard:', role);
-      return;
-    }
-    var dashEl = document.getElementById(cfg.dash);
-    if (!dashEl) {
-      console.warn('Dashboard element not found for role:', r, cfg);
-      return;
-    }
-    dashEl.classList.add('open');
+    var cfg = ROLES[role];
+    document.getElementById(cfg.dash).classList.add('open');
     document.body.style.overflow = 'hidden';
     /* init search/filter for this dashboard */
     initTableFeatures();
     if (role === 'teacher') initAttendance();
-    
-    // Populate profile dropdown and avatar with real user info if available
-    try {
-      if (currentUser) {
-        var pd = document.getElementById('pd-' + r);
-        if (pd) {
-          var pdName = pd.querySelector('.pd-name');
-          var pdEmail = pd.querySelector('.pd-email');
-          if (pdName) pdName.textContent = (currentUser.first_name || '') + (currentUser.last_name ? ' ' + currentUser.last_name : '');
-          if (pdEmail) pdEmail.textContent = currentUser.email || '';
-        }
-
-        // update avatar initials in this dashboard
-        dashEl.querySelectorAll('.app-avatar').forEach(function(av) {
-          if (av.querySelector('img')) return; // keep uploaded image
-          var fn = currentUser.first_name || '';
-          var ln = currentUser.last_name || '';
-          var initials = (fn[0] || '') + (ln.split(' ').pop() ? (ln.split(' ').pop()[0] || '') : '');
-          av.textContent = (initials || (currentUser.email || '').slice(0,2)).toUpperCase();
-        });
-      }
-    } catch (e) {
-      console.warn('Failed to populate user info on dashboard:', e);
-    }
   }
 
   /* --- Close current dashboard --- */

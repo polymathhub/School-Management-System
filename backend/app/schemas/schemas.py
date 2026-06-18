@@ -29,7 +29,7 @@ class UserCreate(BaseModel):
     email: EmailStr
     password: str = Field(..., min_length=12)
     first_name: str = Field(..., min_length=1, max_length=100)
-    last_name: Optional[str] = Field(None, max_length=100)
+    last_name: str = Field(..., min_length=1, max_length=100)
     phone: Optional[str] = None
     role: str = Field(..., pattern="^(admin|teacher|parent|student)$")
     school_id: Optional[int] = None
