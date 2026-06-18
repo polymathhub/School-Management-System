@@ -5441,6 +5441,13 @@ button, [role="button"] { touch-action: manipulation; -webkit-tap-highlight-colo
   var currentRole = null;
   var currentDash = null;
   var currentUser = null;
+  // Map logical role -> dashboard element id and optional metadata
+  var ROLES = {
+    admin:   { dash: 'dash-admin' },
+    teacher: { dash: 'dash-teacher' },
+    parent:  { dash: 'dash-parent' },
+    student: { dash: 'dash-student' }
+  };
   
   /* --- Login attempt tracking (rate limiting) --- */
   var loginAttempts = {};
