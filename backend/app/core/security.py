@@ -4,7 +4,7 @@ from typing import Optional
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 from fastapi import Depends, HTTPException, status
-from fastapi.security import HTTPBearer, HTTPAuthCredentials
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from app.core.config import settings
 
 # Password hashing
@@ -50,7 +50,7 @@ class SecurityUtils:
             return None
 
 
-async def get_current_user(credentials: HTTPAuthCredentials = Depends(security)) -> dict:
+async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)) -> dict:
     """Dependency to get current authenticated user from JWT token"""
     token = credentials.credentials
     payload = SecurityUtils.decode_token(token)
