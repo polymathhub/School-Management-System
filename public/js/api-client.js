@@ -11,6 +11,16 @@ class APIClient {
   static USER_KEY = 'userData';
   static SCHOOL_KEY = 'schoolId';
   static USER_ID_KEY = 'userId';
+  static DEBUG = true; // Set to false in production
+
+  /**
+   * Debug log helper
+   */
+  static log(message, data = null) {
+    if (this.DEBUG) {
+      console.log(`[APIClient] ${message}`, data || '');
+    }
+  }
 
   /**
    * Get stored JWT token from localStorage
@@ -73,6 +83,9 @@ class APIClient {
    */
   static async request(method, endpoint, data = null) {
     const url = `${this.API_BASE}${endpoint}`;
+    
+    this.log(`${method} ${endpoint}`, { url, data });
+    
     const options = {
       method: method,
       headers: this.getHeaders(method, true),
@@ -84,22 +97,46 @@ class APIClient {
 
     try {
       const response = await fetch(url, options);
+      
+      this.log(`Response ${endpoint}`, { status: response.status, statusText: response.statusText });
 
-      // Handle 401 Unauthorized - token expired
+      // Parse response body first (needed for all status codes)
+      let responseData = {};
+      try {
+        responseData = await response.json();
+        this.log(`Response data ${endpoint}`, responseData);
+      } catch (e) {
+        // Not JSON response, that's okay
+      }
+
+      // Handle 401 Unauthorized
       if (response.status === 401) {
-        this.clearSession();
-        window.location.href = '/';
-        throw new Error('Session expired. Please log in again.');
+        // Check if this is a login attempt (credentials invalid) vs session expired
+        if (endpoint === '/auth/login') {
+          // Invalid credentials
+          const errorMsg = responseData.detail || 'Invalid email or password';
+          this.log('Login failed - invalid credentials', errorMsg);
+          throw new Error(errorMsg);
+        } else {
+          // Session expired - token is no longer valid
+          this.log('Session expired - clearing auth');
+          this.clearSession();
+          window.location.href = '/';
+          throw new Error('Your session has expired. Please log in again.');
+        }
       }
 
       // Handle other error responses
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        const errorMessage = errorData.detail || `API Error: ${response.status}`;
-        throw new Error(errorMessage);
+        const errorMessage = responseData.detail || `Error: ${response.status}`;
+        this.log(`API Error ${endpoint}`, { status: response.status, error: errorMessage });
+        const error = new Error(errorMessage);
+        error.status = response.status;
+        error.data = responseData;
+        throw error;
       }
 
-      return await response.json();
+      return responseData;
     } catch (error) {
       console.error(`API Request Error (${method} ${endpoint}):`, error);
       throw error;
@@ -145,14 +182,25 @@ class APIClient {
   static async register(userData) {
     const response = await this.request('POST', '/auth/register', userData);
 
+    // If the register endpoint returns a token, store it.
     if (response.access_token) {
       this.setToken(response.access_token);
-      if (response.user) {
-        this.setUser(response.user);
-      }
+      if (response.user) this.setUser(response.user);
+      return response;
     }
 
-    return response;
+    // Many backends return only the created user on registration.
+    // In that case, attempt to log in automatically using the provided credentials.
+    try {
+      const loginResp = await this.login(userData.email, userData.password);
+      return loginResp;
+    } catch (err) {
+      // If auto-login fails, but registration succeeded, store the returned user locally.
+      if (response && response.id) {
+        this.setUser(response);
+      }
+      throw err;
+    }
   }
 
   /**

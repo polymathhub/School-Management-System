@@ -5542,7 +5542,7 @@ button, [role="button"] { touch-action: manipulation; -webkit-tap-highlight-colo
     
     /* Validate inputs */
     if (!email) {
-      errorEl.textContent = 'Email is required';
+      errorEl.textContent = 'Email address is required';
       errorEl.classList.add('show');
       return;
     }
@@ -5559,7 +5559,8 @@ button, [role="button"] { touch-action: manipulation; -webkit-tap-highlight-colo
     
     /* Check rate limiting */
     if (isLoginLocked(email)) {
-      errorEl.textContent = 'Too many login attempts. Please try again in ' + LOCKOUT_MINUTES + ' minutes.';
+      var minutesLeft = LOCKOUT_MINUTES;
+      errorEl.textContent = 'Too many login attempts. Account locked for ' + minutesLeft + ' minutes. Try again later.';
       errorEl.classList.add('show');
       return;
     }
@@ -5567,7 +5568,7 @@ button, [role="button"] { touch-action: manipulation; -webkit-tap-highlight-colo
     /* Show loading state */
     if (loginBtn) {
       loginBtn.disabled = true;
-      loginBtn.innerHTML = '<span>Logging in...</span><span class="material-icons-round">hourglass_empty</span>';
+      loginBtn.innerHTML = '<span>Signing in...</span><span class="material-icons-round">hourglass_empty</span>';
     }
     errorEl.classList.remove('show');
     
@@ -5579,28 +5580,48 @@ button, [role="button"] { touch-action: manipulation; -webkit-tap-highlight-colo
           clearLoginAttempts(email);
           currentUser = response.user;
           currentRole = response.user.role.toLowerCase();
-          closeAuth();
-          showDashboard(currentRole);
+          
+          /* Small delay to show success state */
+          if (loginBtn) {
+            loginBtn.innerHTML = '<span>Welcome!</span><span class="material-icons-round">check_circle</span>';
+          }
+          
+          setTimeout(function() {
+            closeAuth();
+            showDashboard(currentRole);
+          }, 300);
         })
         .catch(function(error) {
           /* Failure - record attempt and show error */
           recordFailedLogin(email);
-          errorEl.textContent = error.message || 'Login failed. Please try again.';
+          
+          var errorMsg = error.message || 'Login failed. Please try again.';
+          
+          /* Make error messages more professional */
+          if (errorMsg.toLowerCase().includes('invalid')) {
+            errorMsg = 'The email or password you entered is incorrect';
+          } else if (errorMsg.toLowerCase().includes('connection') || errorMsg.toLowerCase().includes('failed')) {
+            errorMsg = 'Could not connect to the server. Please check your connection.';
+          } else if (errorMsg.toLowerCase().includes('not found')) {
+            errorMsg = 'Account not found. Please check your email address.';
+          }
+          
+          errorEl.textContent = errorMsg;
           errorEl.classList.add('show');
           
           if (loginBtn) {
             loginBtn.disabled = false;
-            loginBtn.innerHTML = '<span>Log In</span><span class="material-icons-round">login</span>';
+            loginBtn.innerHTML = '<span>Sign In</span><span class="material-icons-round">login</span>';
           }
         });
     } else {
       /* API client not loaded - show error */
-      errorEl.textContent = 'Authentication service not ready. Please refresh the page.';
+      errorEl.textContent = 'Application not fully loaded. Please refresh the page.';
       errorEl.classList.add('show');
       
       if (loginBtn) {
         loginBtn.disabled = false;
-        loginBtn.innerHTML = '<span>Log In</span><span class="material-icons-round">login</span>';
+        loginBtn.innerHTML = '<span>Sign In</span><span class="material-icons-round">login</span>';
       }
     }
   }
@@ -5642,11 +5663,53 @@ button, [role="button"] { touch-action: manipulation; -webkit-tap-highlight-colo
     }, 100);
   }
 
-  /* --- Handle signup (stub - will integrate with backend) --- */
-  function handleSignup(e) {
+  /* --- Handle signup (integrates with backend) --- */
+  async function handleSignup(e) {
     e.preventDefault();
-    closeAuth();
-    showDashboard(currentRole || 'admin');
+    var form = e.target;
+    var role = (form.id || '').replace('form-signup-', '') || (currentRole || 'admin');
+
+    // helper to find inputs
+    function findInput(selector) { return form.querySelector(selector) || null; }
+
+    var emailEl = findInput('input[type="email"]');
+    var passEl = findInput('input[type="password"]');
+    var nameEl = form.querySelector('input[placeholder*="Full Name"], input[placeholder*="Your Full Name"], input[placeholder*="Full"]') || form.querySelector('input:not([type="email"]):not([type="password"]):not([type="date"])');
+    var phoneEl = form.querySelector('input[placeholder*="Phone"]');
+
+    var email = emailEl ? emailEl.value.trim() : '';
+    var password = passEl ? passEl.value : '';
+    var fullName = nameEl ? nameEl.value.trim() : '';
+    var phone = phoneEl ? phoneEl.value.trim() : '';
+
+    if (!email || !password) {
+      alert('Please provide both email and password.');
+      return;
+    }
+
+    var parts = fullName.split(' ').filter(Boolean);
+    var first_name = parts.length ? parts[0] : email.split('@')[0];
+    var last_name = parts.length > 1 ? parts.slice(1).join(' ') : '';
+
+    var payload = {
+      email: email,
+      password: password,
+      first_name: first_name,
+      last_name: last_name,
+      phone: phone || undefined,
+      role: role,
+      school_id: localStorage.getItem('schoolId') ? parseInt(localStorage.getItem('schoolId'), 10) : undefined
+    };
+
+    try {
+      var res = await APIClient.register(payload);
+      // on success, close auth and open dashboard
+      closeAuth();
+      showDashboard(role);
+    } catch (err) {
+      var msg = (err && err.message) ? err.message : 'Registration failed';
+      alert(msg);
+    }
   }
 
   /* --- Handle forgot password --- */
@@ -6044,6 +6107,26 @@ button, [role="button"] { touch-action: manipulation; -webkit-tap-highlight-colo
   window.submitAssignment  = submitAssignment;
   window.payFee            = payFee;
   window.clearNotifications = clearNotifications;
+
+  /* --- Restore session on page load if token exists --- */
+  document.addEventListener('DOMContentLoaded', async function() {
+    try {
+      var token = APIClient.getToken();
+      if (!token) return;
+      var user = await APIClient.getCurrentUser();
+      if (user) {
+        APIClient.setUser(user);
+        currentUser = user;
+        currentRole = user.role || currentRole;
+        if (user.id) localStorage.setItem('userId', user.id);
+        if (user.school_id) localStorage.setItem('schoolId', user.school_id);
+        showDashboard(currentRole);
+      }
+    } catch (err) {
+      console.log('Session restore failed:', err);
+      APIClient.clearSession();
+    }
+  });
 
   /* ============================================================
      ASSIGNMENT UPLOAD MODAL
