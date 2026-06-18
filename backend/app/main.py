@@ -5,7 +5,7 @@ from fastapi.responses import JSONResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
 from app.core.config import settings
 from app.core.database import engine, Base
-from app.routes import auth, users, schools
+from app.routes import auth, users, schools, students
 from app.models import User, School, Teacher, Student, Class
 import os
 
@@ -65,6 +65,7 @@ def health_check():
 # Include routers
 app.include_router(auth.router)
 app.include_router(users.router)
+app.include_router(students.router)
 app.include_router(schools.router)
 
 
@@ -76,17 +77,6 @@ async def global_exception_handler(request, exc):
         status_code=500,
         content={"detail": "Internal server error"}
     )
-
-
-# Root endpoint
-@app.get("/")
-def root():
-    """API Root"""
-    return {
-        "message": f"Welcome to {settings.APP_NAME} API",
-        "version": settings.APP_VERSION,
-        "docs": "/api/docs"
-    }
 
 
 if __name__ == "__main__":

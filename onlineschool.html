@@ -2744,7 +2744,7 @@ button, [role="button"] { touch-action: manipulation; -webkit-tap-highlight-colo
             <label class="form-label" style="display:flex;justify-content:space-between;align-items:center;">
               Password <a onclick="switchAuthTab('forgot')" style="font-size:12px;color:var(--gold-dark);cursor:pointer">Forgot password?</a>
             </label>
-            <input type="password" class="form-input" id="login-password" placeholder="••••••••" required>
+            <input type="password" class="form-input" id="login-password" placeholder="••••••••" autocomplete="off" required>
           </div>
           <button type="submit" class="auth-btn"><span>Sign In</span><span class="material-icons-round">login</span></button>
           <p class="auth-switch">No account? <a onclick="switchAuthTab('signup')">Create one free</a></p>
@@ -2756,7 +2756,7 @@ button, [role="button"] { touch-action: manipulation; -webkit-tap-highlight-colo
           <div class="form-group"><label class="form-label">Your Full Name</label><input class="form-input" placeholder="Dr. Sandra Roberts" required></div>
           <div class="form-group"><label class="form-label">Admin Email</label><input type="email" class="form-input" placeholder="admin@yourschool.edu" required></div>
           <div class="form-group"><label class="form-label">Phone Number</label><input class="form-input" placeholder="+1 (555) 000-0000"></div>
-          <div class="form-group"><label class="form-label">Password</label><input type="password" class="form-input" placeholder="Min. 8 characters" required></div>
+          <div class="form-group"><label class="form-label">Password</label><input type="password" class="form-input" placeholder="Min. 8 characters" autocomplete="off" required></div>
           <button type="submit" class="auth-btn"><span>Create Admin Account</span><span class="material-icons-round">admin_panel_settings</span></button>
           <p class="auth-switch">Have an account? <a onclick="switchAuthTab('login')">Sign in</a></p>
         </form>
@@ -2767,7 +2767,7 @@ button, [role="button"] { touch-action: manipulation; -webkit-tap-highlight-colo
           <div class="form-group"><label class="form-label">School Email</label><input type="email" class="form-input" placeholder="teacher@school.edu" required></div>
           <div class="form-group"><label class="form-label">Subject / Department</label><select class="form-input form-select" required><option value="">Select subject...</option><option>Mathematics</option><option>English Language</option><option>Sciences</option><option>History & Social Studies</option><option>Arts & Design</option><option>Physical Education</option><option>ICT / Computer Science</option></select></div>
           <div class="form-group"><label class="form-label">Employee ID</label><input class="form-input" placeholder="TCH-001"></div>
-          <div class="form-group"><label class="form-label">Password</label><input type="password" class="form-input" placeholder="Min. 8 characters" required></div>
+          <div class="form-group"><label class="form-label">Password</label><input type="password" class="form-input" placeholder="Min. 8 characters" autocomplete="off" required></div>
           <button type="submit" class="auth-btn"><span>Create Teacher Account</span><span class="material-icons-round">cast_for_education</span></button>
           <p class="auth-switch">Have an account? <a onclick="switchAuthTab('login')">Sign in</a></p>
         </form>
@@ -2779,7 +2779,7 @@ button, [role="button"] { touch-action: manipulation; -webkit-tap-highlight-colo
           <div class="form-group"><label class="form-label">Phone Number</label><input class="form-input" placeholder="+1 (555) 000-0000"></div>
           <div class="form-group"><label class="form-label">Child's Full Name</label><input class="form-input" placeholder="Emma Wilson" required></div>
           <div class="form-group"><label class="form-label">Child's Grade</label><select class="form-input form-select" required><option value="">Select grade...</option><option>Grade 5</option><option>Grade 6</option><option>Grade 7</option><option>Grade 8</option><option>Grade 9</option><option>Grade 10</option><option>Grade 11</option><option>Grade 12</option></select></div>
-          <div class="form-group"><label class="form-label">Password</label><input type="password" class="form-input" placeholder="Min. 8 characters" required></div>
+          <div class="form-group"><label class="form-label">Password</label><input type="password" class="form-input" placeholder="Min. 8 characters" autocomplete="off" required></div>
           <button type="submit" class="auth-btn"><span>Create Parent Account</span><span class="material-icons-round">family_restroom</span></button>
           <p class="auth-switch">Have an account? <a onclick="switchAuthTab('login')">Sign in</a></p>
         </form>
@@ -2791,7 +2791,7 @@ button, [role="button"] { touch-action: manipulation; -webkit-tap-highlight-colo
           <div class="form-group"><label class="form-label">Student ID</label><input class="form-input" placeholder="STU-002"></div>
           <div class="form-group"><label class="form-label">Grade / Class</label><select class="form-input form-select" required><option value="">Select grade...</option><option>Grade 5A</option><option>Grade 6B</option><option>Grade 7A</option><option>Grade 8C</option><option>Grade 9A</option><option>Grade 10B</option><option>Grade 11A</option><option>Grade 12A</option></select></div>
           <div class="form-group"><label class="form-label">Date of Birth</label><input type="date" class="form-input" required></div>
-          <div class="form-group"><label class="form-label">Password</label><input type="password" class="form-input" placeholder="Min. 8 characters" required></div>
+          <div class="form-group"><label class="form-label">Password</label><input type="password" class="form-input" placeholder="Min. 8 characters" autocomplete="off" required></div>
           <button type="submit" class="auth-btn"><span>Create Student Account</span><span class="material-icons-round">school</span></button>
           <p class="auth-switch">Have an account? <a onclick="switchAuthTab('login')">Sign in</a></p>
         </form>
@@ -5436,15 +5436,40 @@ button, [role="button"] { touch-action: manipulation; -webkit-tap-highlight-colo
 (function() {
   'use strict';
 
-  /* --- Role config --- */
-  var ROLES = {
-    admin:   { email:'admin@onlineschool.com',   pass:'admin123',   name:'Dr. Sandra Roberts',  role:'Administrator', icon:'admin_panel_settings', dash:'dash-admin',   initials:'SR' },
-    teacher: { email:'teacher@onlineschool.com', pass:'teacher123', name:'Mr. Michael Thompson',role:'Teacher',       icon:'cast_for_education',   dash:'dash-teacher', initials:'MT' },
-    parent:  { email:'parent@onlineschool.com',  pass:'parent123',  name:'Mrs. Sarah Wilson',   role:'Parent',        icon:'family_restroom',       dash:'dash-parent',  initials:'SW' },
-    student: { email:'student@onlineschool.com', pass:'student123', name:'James Cooper',        role:'Student',       icon:'school',               dash:'dash-student', initials:'JC' }
-  };
+  /* --- Authentication & dashboard state --- */
+  /* Demo credentials removed for security - authentication via backend API */
   var currentRole = null;
   var currentDash = null;
+  var currentUser = null;
+  
+  /* --- Login attempt tracking (rate limiting) --- */
+  var loginAttempts = {};
+  const MAX_LOGIN_ATTEMPTS = 5;
+  const LOCKOUT_MINUTES = 15;
+  
+  function isLoginLocked(email) {
+    if (!loginAttempts[email]) return false;
+    var lastAttempt = loginAttempts[email].lastTime;
+    var attempts = loginAttempts[email].count;
+    var now = Date.now();
+    if (now - lastAttempt > LOCKOUT_MINUTES * 60 * 1000) {
+      delete loginAttempts[email];
+      return false;
+    }
+    return attempts >= MAX_LOGIN_ATTEMPTS;
+  }
+  
+  function recordFailedLogin(email) {
+    if (!loginAttempts[email]) {
+      loginAttempts[email] = { count: 0, lastTime: Date.now() };
+    }
+    loginAttempts[email].count++;
+    loginAttempts[email].lastTime = Date.now();
+  }
+  
+  function clearLoginAttempts(email) {
+    delete loginAttempts[email];
+  }
 
   /* --- Open auth overlay --- */
   function openAuth() {
@@ -5469,18 +5494,23 @@ button, [role="button"] { touch-action: manipulation; -webkit-tap-highlight-colo
   /* --- Select role card --- */
   function selectRole(role) {
     currentRole = role;
-    var cfg = ROLES[role];
-    /* update pill */
+    var roleConfig = {
+      admin:   { icon:'admin_panel_settings', name:'Administrator' },
+      teacher: { icon:'cast_for_education',   name:'Teacher' },
+      parent:  { icon:'family_restroom',       name:'Parent' },
+      student: { icon:'school',               name:'Student' }
+    };
+    var cfg = roleConfig[role] || { icon:'person', name:'User' };
     document.getElementById('auth-pill-icon').textContent = cfg.icon;
-    document.getElementById('auth-pill-label').textContent = cfg.role;
-    /* update demo hint */
-    document.getElementById('demo-fill-btn').textContent = cfg.email + ' / ' + cfg.pass;
-    /* reset to login tab */
+    document.getElementById('auth-pill-label').textContent = cfg.name;
     switchAuthTab('login');
     switchAuthScreen('form');
   }
 
-  /* --- Switch login/signup/forgot tab --- */
+  /* --- Demo functionality disabled for security --- */
+  function fillDemo() {
+    console.log('Demo credentials removed for security. Please log in with real credentials.');
+  }
   function switchAuthTab(tab) {
     document.querySelectorAll('.auth-tab').forEach(function(t) {
       t.classList.toggle('active', t.dataset.authTab === tab);
@@ -5502,30 +5532,117 @@ button, [role="button"] { touch-action: manipulation; -webkit-tap-highlight-colo
     }
   }
 
-  /* --- Fill demo credentials --- */
-  function fillDemo() {
-    if (!currentRole) return;
-    var cfg = ROLES[currentRole];
-    document.getElementById('login-email').value = cfg.email;
-    document.getElementById('login-password').value = cfg.pass;
-    document.getElementById('login-error').classList.remove('show');
-  }
-
   /* --- Handle login --- */
   function handleLogin(e) {
     e.preventDefault();
     var email = document.getElementById('login-email').value.trim();
-    var pass  = document.getElementById('login-password').value;
-    var cfg = currentRole ? ROLES[currentRole] : null;
-    if (cfg && email === cfg.email && pass === cfg.pass) {
-      closeAuth();
-      showDashboard(currentRole);
+    var pass = document.getElementById('login-password').value;
+    var errorEl = document.getElementById('login-error');
+    var loginBtn = document.querySelector('#form-login button[type="submit"]');
+    
+    /* Validate inputs */
+    if (!email) {
+      errorEl.textContent = 'Email is required';
+      errorEl.classList.add('show');
+      return;
+    }
+    if (!validateEmail(email)) {
+      errorEl.textContent = 'Please enter a valid email address';
+      errorEl.classList.add('show');
+      return;
+    }
+    if (!pass) {
+      errorEl.textContent = 'Password is required';
+      errorEl.classList.add('show');
+      return;
+    }
+    
+    /* Check rate limiting */
+    if (isLoginLocked(email)) {
+      errorEl.textContent = 'Too many login attempts. Please try again in ' + LOCKOUT_MINUTES + ' minutes.';
+      errorEl.classList.add('show');
+      return;
+    }
+    
+    /* Show loading state */
+    if (loginBtn) {
+      loginBtn.disabled = true;
+      loginBtn.innerHTML = '<span>Logging in...</span><span class="material-icons-round">hourglass_empty</span>';
+    }
+    errorEl.classList.remove('show');
+    
+    /* Call API to authenticate */
+    if (typeof APIClient !== 'undefined') {
+      APIClient.login(email, pass)
+        .then(function(response) {
+          /* Success - clear attempt counter and proceed */
+          clearLoginAttempts(email);
+          currentUser = response.user;
+          currentRole = response.user.role.toLowerCase();
+          closeAuth();
+          showDashboard(currentRole);
+        })
+        .catch(function(error) {
+          /* Failure - record attempt and show error */
+          recordFailedLogin(email);
+          errorEl.textContent = error.message || 'Login failed. Please try again.';
+          errorEl.classList.add('show');
+          
+          if (loginBtn) {
+            loginBtn.disabled = false;
+            loginBtn.innerHTML = '<span>Log In</span><span class="material-icons-round">login</span>';
+          }
+        });
     } else {
-      document.getElementById('login-error').classList.add('show');
+      /* API client not loaded - show error */
+      errorEl.textContent = 'Authentication service not ready. Please refresh the page.';
+      errorEl.classList.add('show');
+      
+      if (loginBtn) {
+        loginBtn.disabled = false;
+        loginBtn.innerHTML = '<span>Log In</span><span class="material-icons-round">login</span>';
+      }
     }
   }
+  
+  /* --- Validate email format --- */
+  function validateEmail(email) {
+    var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  }
 
-  /* --- Handle signup (go straight to dashboard) --- */
+  /* --- Handle logout --- */
+  function logout() {
+    /* Clear all sensitive data */
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('userData');
+    localStorage.removeItem('schoolId');
+    localStorage.removeItem('userId');
+    
+    /* Clear session variables */
+    currentUser = null;
+    currentRole = null;
+    currentDash = null;
+    
+    /* Clear form data */
+    document.getElementById('login-email').value = '';
+    document.getElementById('login-password').value = '';
+    
+    /* Close all panels */
+    closeDashboard();
+    
+    /* Clear browser history */
+    if (window.history && window.history.replaceState) {
+      window.history.replaceState({}, '', '/');
+    }
+    
+    /* Redirect to login */
+    setTimeout(function() {
+      window.location.href = '/';
+    }, 100);
+  }
+
+  /* --- Handle signup (stub - will integrate with backend) --- */
   function handleSignup(e) {
     e.preventDefault();
     closeAuth();
@@ -7998,6 +8115,9 @@ button, [role="button"] { touch-action: manipulation; -webkit-tap-highlight-colo
 
 })();
 </script>
+
+<!-- Load API Client Library -->
+<script src="/static/js/api-client.js"></script>
 
 <!-- Mobile sidebar backdrop (shared across all dashboards) -->
 <div id="mob-sidebar-backdrop" onclick="closeMobileSidebar()"></div>
