@@ -1,4 +1,5 @@
 """Pydantic Schemas - Request/Response validation"""
+from __future__ import annotations
 from pydantic import BaseModel, EmailStr, Field
 from typing import Optional
 from datetime import datetime
@@ -16,7 +17,7 @@ class AuthResponse(BaseModel):
     """Login response schema"""
     access_token: str
     token_type: str = "bearer"
-    user: "UserResponse"
+    user: UserResponse
 
 
 class TokenData(BaseModel):
