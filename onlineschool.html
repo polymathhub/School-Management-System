@@ -5595,6 +5595,8 @@ button, [role="button"] { touch-action: manipulation; -webkit-tap-highlight-colo
           
           setTimeout(function() {
             closeAuth();
+            // apply profile before showing dashboard
+            try { applyUserProfile(currentUser); } catch(e){}
             showDashboard(currentRole);
           }, 300);
         })
@@ -5637,6 +5639,38 @@ button, [role="button"] { touch-action: manipulation; -webkit-tap-highlight-colo
   function validateEmail(email) {
     var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
+  }
+
+  /* --- Apply user profile across all dashboards (name, email, initials) --- */
+  function applyUserProfile(user) {
+    if (!user) return;
+    try {
+      var fullName = (user.first_name || '') + (user.last_name ? ' ' + user.last_name : '');
+      fullName = fullName.trim() || (user.email ? user.email.split('@')[0] : 'User');
+
+      // Update all profile dropdown name/email
+      document.querySelectorAll('.pd-name').forEach(function(el) { el.textContent = fullName; });
+      document.querySelectorAll('.pd-email').forEach(function(el) { el.textContent = user.email || ''; });
+
+      // Compute initials (first of first name + first of last word)
+      var fn = (user.first_name || '').trim();
+      var ln = (user.last_name || '').trim();
+      var initials = '';
+      if (fn) initials += fn[0];
+      if (ln) initials += ln.split(' ').slice(-1)[0][0] || '';
+      if (!initials && user.email) initials = user.email.slice(0,2);
+      initials = initials.toUpperCase();
+
+      // Update avatar initials inside each dashboard overlay
+      document.querySelectorAll('.app-overlay').forEach(function(dash) {
+        dash.querySelectorAll('.app-avatar').forEach(function(av) {
+          if (av.querySelector('img')) return; // keep image avatars
+          av.textContent = initials;
+        });
+      });
+    } catch (e) {
+      console.warn('applyUserProfile failed', e);
+    }
   }
 
   /* --- Handle logout --- */
@@ -5696,7 +5730,7 @@ button, [role="button"] { touch-action: manipulation; -webkit-tap-highlight-colo
 
     var parts = fullName.split(' ').filter(Boolean);
     var first_name = parts.length ? parts[0] : email.split('@')[0];
-    var last_name = parts.length > 1 ? parts.slice(1).join(' ') : '';
+    var last_name = parts.length > 1 ? parts.slice(1).join(' ') : null;
 
     var payload = {
       email: email,
@@ -5717,6 +5751,7 @@ button, [role="button"] { touch-action: manipulation; -webkit-tap-highlight-colo
       if (user) {
         currentUser = user;
         currentRole = (user.role || role || 'admin').toLowerCase();
+        try { applyUserProfile(currentUser); } catch(e){}
       } else {
         currentRole = (role || 'admin').toLowerCase();
       }
@@ -6198,6 +6233,7 @@ button, [role="button"] { touch-action: manipulation; -webkit-tap-highlight-colo
         currentRole = user.role || currentRole;
         if (user.id) localStorage.setItem('userId', user.id);
         if (user.school_id) localStorage.setItem('schoolId', user.school_id);
+        try { applyUserProfile(currentUser); } catch(e){}
         showDashboard(currentRole);
       }
     } catch (err) {
