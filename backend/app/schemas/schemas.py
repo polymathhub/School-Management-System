@@ -5,28 +5,24 @@ from typing import Optional
 from datetime import datetime
 
 
-# ==================== Auth Schemas ====================
-
-class AuthRequest(BaseModel):
-    """Login request schema"""
-    email: EmailStr
-    password: str = Field(..., min_length=6)
-
-
-class AuthResponse(BaseModel):
-    """Login response schema"""
-    access_token: str
-    token_type: str = "bearer"
-    user: UserResponse
-
-
-class TokenData(BaseModel):
-    """Token data payload"""
-    sub: str
-    role: str
-
-
 # ==================== User Schemas ====================
+
+class UserResponse(BaseModel):
+    """User response schema"""
+    id: int
+    email: str
+    first_name: str
+    last_name: str
+    phone: Optional[str]
+    role: str
+    status: str
+    is_verified: bool
+    school_id: int
+    created_at: datetime
+    
+    class Config:
+        from_attributes = True
+
 
 class UserCreate(BaseModel):
     """Create user schema"""
@@ -47,21 +43,25 @@ class UserUpdate(BaseModel):
     status: Optional[str] = None
 
 
-class UserResponse(BaseModel):
-    """User response schema"""
-    id: int
-    email: str
-    first_name: str
-    last_name: str
-    phone: Optional[str]
+# ==================== Auth Schemas ====================
+
+class AuthRequest(BaseModel):
+    """Login request schema"""
+    email: EmailStr
+    password: str = Field(..., min_length=6)
+
+
+class AuthResponse(BaseModel):
+    """Login response schema"""
+    access_token: str
+    token_type: str = "bearer"
+    user: UserResponse
+
+
+class TokenData(BaseModel):
+    """Token data payload"""
+    sub: str
     role: str
-    status: str
-    is_verified: bool
-    school_id: int
-    created_at: datetime
-    
-    class Config:
-        from_attributes = True
 
 
 # ==================== School Schemas ====================
