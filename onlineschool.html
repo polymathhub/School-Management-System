@@ -5707,8 +5707,46 @@ button, [role="button"] { touch-action: manipulation; -webkit-tap-highlight-colo
       closeAuth();
       showDashboard(role);
     } catch (err) {
-      var msg = (err && err.message) ? err.message : 'Registration failed';
-      alert(msg);
+      // Clear previous field highlights
+      form.querySelectorAll('input').forEach(function(i) { i.style.borderColor = ''; });
+
+      // Ensure an error element exists inside the form
+      var errEl = form.querySelector('.auth-error');
+      if (!errEl) {
+        errEl = document.createElement('div');
+        errEl.className = 'auth-error';
+        form.insertBefore(errEl, form.firstChild);
+      }
+      errEl.classList.add('show');
+
+      // If API returned structured validation errors, map them to fields
+      var userMsg = '';
+      if (err && err.data && err.data.detail && Array.isArray(err.data.detail)) {
+        var messages = [];
+        var firstBadInput = null;
+        err.data.detail.forEach(function(item) {
+          var msg = item.msg || item.message || JSON.stringify(item);
+          messages.push(msg);
+          if (Array.isArray(item.loc)) {
+            var fld = item.loc[item.loc.length - 1];
+            // try to find a matching input by name, placeholder, or type
+            var sel = form.querySelector('[name="' + fld + '"]')
+                   || form.querySelector('input[placeholder*="' + fld.replace('_',' ') + '"]')
+                   || (fld === 'email' ? form.querySelector('input[type="email"]') : null)
+                   || (fld === 'password' ? form.querySelector('input[type="password"]') : null);
+            if (sel) {
+              sel.style.borderColor = '#ef5350';
+              if (!firstBadInput) firstBadInput = sel;
+            }
+          }
+        });
+        userMsg = messages.join('; ');
+        if (firstBadInput) firstBadInput.focus();
+      } else {
+        userMsg = (err && err.message) ? err.message : 'Registration failed. Please try again.';
+      }
+
+      errEl.textContent = userMsg;
     }
   }
 
