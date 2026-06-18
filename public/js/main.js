@@ -8,7 +8,7 @@
 // ============================================================
 
 const APP_CONFIG = {
-  apiBase: 'http://localhost:8000/api',  // ✅ Backend API URL
+  apiBase: `${window.location.origin}/api`,  // ✅ Dynamic backend API URL
   version: '1.0.0',
   roles: ['admin', 'teacher', 'parent', 'student']
 };
@@ -481,9 +481,7 @@ document.querySelectorAll('.reveal').forEach(el => {
   observer.observe(el);
 });
 
-// ============================================================
 // COUNTER ANIMATION TRIGGERS
-// ============================================================
 
 const counterObserver = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
@@ -499,9 +497,7 @@ document.querySelectorAll('[data-count], [data-target]').forEach(el => {
   counterObserver.observe(el);
 });
 
-// ============================================================
 // PRICING TOGGLE
-// ============================================================
 
 const billingToggle = document.getElementById('billing-toggle');
 const pricingValues = {
@@ -524,7 +520,7 @@ billingToggle?.addEventListener('click', () => {
 });
 
 
-// ROLE TABS
+// ROLE TABS when unswitched
 
 
 document.querySelectorAll('.r-tab').forEach(tab => {
@@ -541,9 +537,8 @@ document.querySelectorAll('.r-tab').forEach(tab => {
   });
 });
 
-// ============================================================
 // FAQ ACCORDION
-// ============================================================
+
 
 document.querySelectorAll('.faq-q').forEach(question => {
   question.addEventListener('click', () => {

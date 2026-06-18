@@ -1,11 +1,13 @@
 """FastAPI Application - Main Entry Point"""
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, FileResponse
+from fastapi.staticfiles import StaticFiles
 from app.core.config import settings
 from app.core.database import engine, Base
 from app.routes import auth, users, schools
 from app.models import User, School, Teacher, Student, Class
+import os
 
 # Create database tables
 Base.metadata.create_all(bind=engine)
@@ -27,6 +29,25 @@ app.add_middleware(
     allow_methods=settings.CORS_ALLOW_METHODS,
     allow_headers=settings.CORS_ALLOW_HEADERS,
 )
+
+# Mount static files
+static_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "public")
+if os.path.exists(static_dir):
+    app.mount("/static", StaticFiles(directory=static_dir), name="static")
+
+
+# Root endpoint - serve frontend
+@app.get("/")
+async def root():
+    """Serve the main HTML file"""
+    html_file = os.path.join(static_dir, "onlineschool.html") if os.path.exists(static_dir) else None
+    if html_file and os.path.exists(html_file):
+        return FileResponse(html_file, media_type="text/html")
+    return {
+        "message": "Welcome to OnlineSchool API",
+        "version": settings.APP_VERSION,
+        "docs": "/api/docs"
+    }
 
 
 # Health check endpoint
