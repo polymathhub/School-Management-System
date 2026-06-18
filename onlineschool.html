@@ -2141,6 +2141,7 @@ button, [role="button"] { touch-action: manipulation; -webkit-tap-highlight-colo
           </div>
           <div class="m-body">
             <div class="d-layout">
+              <div id="student-greeting" class="stu-greeting" style="font-size:18px;margin-bottom:8px;color:var(--muted)"></div>
               <div class="d-side">
                 <div class="d-logo">OS</div>
                 <div class="d-nav on"><span class="material-icons-round">dashboard</span> Dashboard</div>
@@ -5841,6 +5842,20 @@ button, [role="button"] { touch-action: manipulation; -webkit-tap-highlight-colo
     /* init search/filter for this dashboard */
     initTableFeatures();
     if (role === 'teacher') initAttendance();
+    // If showing student dashboard, set a time-of-day greeting using current user's name
+    if (role === 'student') {
+      try {
+        var name = (currentUser && (currentUser.first_name || currentUser.full_name || currentUser.email)) || 'Student';
+        var hour = new Date().getHours();
+        var greet = 'Good morning';
+        if (hour >= 12 && hour < 17) greet = 'Good afternoon';
+        else if (hour >= 17) greet = 'Good evening';
+        // use first name when available
+        var displayName = name.split ? (name.split(' ')[0]) : name;
+        var el = document.getElementById('student-greeting');
+        if (el) el.textContent = greet + ' ' + displayName + '!';
+      } catch (e) { console.warn('Greeting update failed', e); }
+    }
   }
 
   /* --- Close current dashboard --- */
