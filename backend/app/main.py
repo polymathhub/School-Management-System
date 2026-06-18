@@ -31,7 +31,8 @@ app.add_middleware(
 )
 
 # Mount static files
-static_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "public")
+project_root = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+static_dir = os.path.join(project_root, "public")
 if os.path.exists(static_dir):
     app.mount("/static", StaticFiles(directory=static_dir), name="static")
 
@@ -40,8 +41,8 @@ if os.path.exists(static_dir):
 @app.get("/")
 async def root():
     """Serve the main HTML file"""
-    html_file = os.path.join(static_dir, "onlineschool.html") if os.path.exists(static_dir) else None
-    if html_file and os.path.exists(html_file):
+    html_file = os.path.join(project_root, "onlineschool.html")
+    if os.path.exists(html_file):
         return FileResponse(html_file, media_type="text/html")
     return {
         "message": "Welcome to OnlineSchool API",
