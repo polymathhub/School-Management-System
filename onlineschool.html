@@ -2752,46 +2752,46 @@ button, [role="button"] { touch-action: manipulation; -webkit-tap-highlight-colo
 
         <!-- SIGNUP — ADMIN -->
         <form class="auth-form" id="form-signup-admin" onsubmit="handleSignup(event)">
-          <div class="form-group"><label class="form-label">School Name</label><input class="form-input" placeholder="Greenwood Academy" required></div>
-          <div class="form-group"><label class="form-label">Your Full Name</label><input class="form-input" placeholder="Dr. Sandra Roberts" required></div>
-          <div class="form-group"><label class="form-label">Admin Email</label><input type="email" class="form-input" placeholder="admin@yourschool.edu" required></div>
-          <div class="form-group"><label class="form-label">Phone Number</label><input class="form-input" placeholder="+1 (555) 000-0000"></div>
-          <div class="form-group"><label class="form-label">Password</label><input type="password" class="form-input" placeholder="Min. 8 characters" autocomplete="off" required></div>
+          <div class="form-group"><label class="form-label">School Name</label><input name="school_name" class="form-input" placeholder="Greenwood Academy" required></div>
+          <div class="form-group"><label class="form-label">Your Full Name</label><input name="first_name" class="form-input" placeholder="Dr. Sandra Roberts" required></div>
+          <div class="form-group"><label class="form-label">Admin Email</label><input name="email" type="email" class="form-input" placeholder="admin@yourschool.edu" required></div>
+          <div class="form-group"><label class="form-label">Phone Number</label><input name="phone" class="form-input" placeholder="+1 (555) 000-0000"></div>
+          <div class="form-group"><label class="form-label">Password</label><input name="password" type="password" class="form-input" placeholder="Min. 8 characters" autocomplete="off" required></div>
           <button type="submit" class="auth-btn"><span>Create Admin Account</span><span class="material-icons-round">admin_panel_settings</span></button>
           <p class="auth-switch">Have an account? <a onclick="switchAuthTab('login')">Sign in</a></p>
         </form>
 
         <!-- SIGNUP — TEACHER -->
         <form class="auth-form" id="form-signup-teacher" onsubmit="handleSignup(event)">
-          <div class="form-group"><label class="form-label">Full Name</label><input class="form-input" placeholder="Mr. Michael Thompson" required></div>
-          <div class="form-group"><label class="form-label">School Email</label><input type="email" class="form-input" placeholder="teacher@school.edu" required></div>
-          <div class="form-group"><label class="form-label">Subject / Department</label><select class="form-input form-select" required><option value="">Select subject...</option><option>Mathematics</option><option>English Language</option><option>Sciences</option><option>History & Social Studies</option><option>Arts & Design</option><option>Physical Education</option><option>ICT / Computer Science</option></select></div>
-          <div class="form-group"><label class="form-label">Employee ID</label><input class="form-input" placeholder="TCH-001"></div>
-          <div class="form-group"><label class="form-label">Password</label><input type="password" class="form-input" placeholder="Min. 8 characters" autocomplete="off" required></div>
+          <div class="form-group"><label class="form-label">Full Name</label><input name="first_name" class="form-input" placeholder="Mr. Michael Thompson" required></div>
+          <div class="form-group"><label class="form-label">School Email</label><input name="email" type="email" class="form-input" placeholder="teacher@school.edu" required></div>
+          <div class="form-group"><label class="form-label">Subject / Department</label><select name="subject" class="form-input form-select" required><option value="">Select subject...</option><option>Mathematics</option><option>English Language</option><option>Sciences</option><option>History & Social Studies</option><option>Arts & Design</option><option>Physical Education</option><option>ICT / Computer Science</option></select></div>
+          <div class="form-group"><label class="form-label">Employee ID</label><input name="employee_id" class="form-input" placeholder="TCH-001"></div>
+          <div class="form-group"><label class="form-label">Password</label><input name="password" type="password" class="form-input" placeholder="Min. 8 characters" autocomplete="off" required></div>
           <button type="submit" class="auth-btn"><span>Create Teacher Account</span><span class="material-icons-round">cast_for_education</span></button>
           <p class="auth-switch">Have an account? <a onclick="switchAuthTab('login')">Sign in</a></p>
         </form>
 
         <!-- SIGNUP — PARENT -->
         <form class="auth-form" id="form-signup-parent" onsubmit="handleSignup(event)">
-          <div class="form-group"><label class="form-label">Your Full Name</label><input class="form-input" placeholder="Mrs. Sarah Wilson" required></div>
-          <div class="form-group"><label class="form-label">Email Address</label><input type="email" class="form-input" placeholder="parent@email.com" required></div>
-          <div class="form-group"><label class="form-label">Phone Number</label><input class="form-input" placeholder="+1 (555) 000-0000"></div>
-          <div class="form-group"><label class="form-label">Child's Full Name</label><input class="form-input" placeholder="Emma Wilson" required></div>
-          <div class="form-group"><label class="form-label">Child's Grade</label><select class="form-input form-select" required><option value="">Select grade...</option><option>Grade 5</option><option>Grade 6</option><option>Grade 7</option><option>Grade 8</option><option>Grade 9</option><option>Grade 10</option><option>Grade 11</option><option>Grade 12</option></select></div>
-          <div class="form-group"><label class="form-label">Password</label><input type="password" class="form-input" placeholder="Min. 8 characters" autocomplete="off" required></div>
+          <div class="form-group"><label class="form-label">Your Full Name</label><input name="first_name" class="form-input" placeholder="Mrs. Sarah Wilson" required></div>
+          <div class="form-group"><label class="form-label">Email Address</label><input name="email" type="email" class="form-input" placeholder="parent@email.com" required></div>
+          <div class="form-group"><label class="form-label">Phone Number</label><input name="phone" class="form-input" placeholder="+1 (555) 000-0000"></div>
+          <div class="form-group"><label class="form-label">Child's Full Name</label><input name="child_name" class="form-input" placeholder="Emma Wilson" required></div>
+          <div class="form-group"><label class="form-label">Child's Grade</label><select name="child_grade" class="form-input form-select" required><option value="">Select grade...</option><option>Grade 5</option><option>Grade 6</option><option>Grade 7</option><option>Grade 8</option><option>Grade 9</option><option>Grade 10</option><option>Grade 11</option><option>Grade 12</option></select></div>
+          <div class="form-group"><label class="form-label">Password</label><input name="password" type="password" class="form-input" placeholder="Min. 8 characters" autocomplete="off" required></div>
           <button type="submit" class="auth-btn"><span>Create Parent Account</span><span class="material-icons-round">family_restroom</span></button>
           <p class="auth-switch">Have an account? <a onclick="switchAuthTab('login')">Sign in</a></p>
         </form>
 
         <!-- SIGNUP — STUDENT -->
         <form class="auth-form" id="form-signup-student" onsubmit="handleSignup(event)">
-          <div class="form-group"><label class="form-label">Full Name</label><input class="form-input" placeholder="James Cooper" required></div>
-          <div class="form-group"><label class="form-label">School Email</label><input type="email" class="form-input" placeholder="student@school.edu" required></div>
-          <div class="form-group"><label class="form-label">Student ID</label><input class="form-input" placeholder="STU-002"></div>
-          <div class="form-group"><label class="form-label">Grade / Class</label><select class="form-input form-select" required><option value="">Select grade...</option><option>Grade 5A</option><option>Grade 6B</option><option>Grade 7A</option><option>Grade 8C</option><option>Grade 9A</option><option>Grade 10B</option><option>Grade 11A</option><option>Grade 12A</option></select></div>
-          <div class="form-group"><label class="form-label">Date of Birth</label><input type="date" class="form-input" required></div>
-          <div class="form-group"><label class="form-label">Password</label><input type="password" class="form-input" placeholder="Min. 8 characters" autocomplete="off" required></div>
+          <div class="form-group"><label class="form-label">Full Name</label><input name="first_name" class="form-input" placeholder="James Cooper" required></div>
+          <div class="form-group"><label class="form-label">School Email</label><input name="email" type="email" class="form-input" placeholder="student@school.edu" required></div>
+          <div class="form-group"><label class="form-label">Student ID</label><input name="enrollment_number" class="form-input" placeholder="STU-002"></div>
+          <div class="form-group"><label class="form-label">Grade / Class</label><select name="grade_level" class="form-input form-select" required><option value="">Select grade...</option><option>Grade 5A</option><option>Grade 6B</option><option>Grade 7A</option><option>Grade 8C</option><option>Grade 9A</option><option>Grade 10B</option><option>Grade 11A</option><option>Grade 12A</option></select></div>
+          <div class="form-group"><label class="form-label">Date of Birth</label><input name="date_of_birth" type="date" class="form-input" required></div>
+          <div class="form-group"><label class="form-label">Password</label><input name="password" type="password" class="form-input" placeholder="Min. 8 characters" autocomplete="off" required></div>
           <button type="submit" class="auth-btn"><span>Create Student Account</span><span class="material-icons-round">school</span></button>
           <p class="auth-switch">Have an account? <a onclick="switchAuthTab('login')">Sign in</a></p>
         </form>
